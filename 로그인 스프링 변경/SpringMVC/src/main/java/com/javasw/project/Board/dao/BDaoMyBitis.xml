@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- pom.xml의 버전, jdbc-config.xml의 위치 지정으로 인터페이스 구현하는 MyBitis.xml -->
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- RowMapper 클래스를 MyBatis의 ResultMap으로 바꿈 -->
+<!-- 인터페이스 IBDao를 구현하겠다. -->
+<mapper namespace="com.javasw.project.Board.dao.IBDao">
+	<!-- VO 사용할 것이며 id(변수명, 별명)사용 (property(VO), column(DB속성))-->
+	<resultMap id="getBoardInfo" type="com.javasw.project.Board.model.BVo">
+		<!-- VO 셋터에 매칭시켜 넣음 -->
+		<result property="bId" column="bId" />
+		<result property="bName" column="bName" />
+		<result property="bTitle" column="bTitle" />
+		<result property="bContent" column="bContent" />
+		<result property="bDate" column="bDate" />
+		<result property="bHit" column="bHit" />
+		<result property="bGroup" column="bGroup" />
+		<result property="bStep" column="bStep" />
+		<result property="bIndent" column="bIndent" />
+	</resultMap>
+
+	<select id="list" resultMap="getBoardInfo">
+		SELECT bId, bName, bTitle, bContent, bDate, bHit, bGroup, bStep, bIndent
+		FROM board 
+		ORDER BY bGroup DESC, bStep ASC
+	</select>
+	
+	<insert id="write" parameterType="String, String, String">
+		INSERT INTO board(bId, bName, bTitle, bContent, bHit, bGroup, bStep, bIndent)
+		VALUES (board_seq.NEXTVAL, #{bName}, #{bTitle}, #{bContent}, 0, board_seq.CURRVAL, 0, 0) ";
+	</insert>
+	
+	<select id="contentView" parameterType="String" resultType="getBoardInfo">
+		SELECT * 
+		FROM board 
+		WHERE bId = #{strID}
+	</select>
+	
+	<update id="modify" parameterType="String, String, String, String">
+		UPDATE board 
+		SET bName = #{bName}, bTitle = #{bTitle}, bContent = #{bContent}
+		WHERE bId = #{bId}
+	</update>
+	
+	<delete id="delete" parameterType="String">
+		DELETE
+		FROM board
+		WHERE bId = #{bId}
+	</delete>
+	
+	<select id="reply_view" parameterType="String" resultType="com.javaEdu.Board.model.BVo.java">
+		SELECT * 
+		FROM board 
+		WHERE bId = #{str}
+	</select>
+	
+	<insert id="reply" parameterType="String, String, String, String, String, String, String">
+		INSERT INTO board(bId, bName, bTitle, bContent, bGroup, bStep, bIndent)
+		VALUES (board_seq.nextval, #{bName}, #{bTitle}, #{bContent}, #{bGroup}, #{bStep}, #{bIndent})
+	</insert>
+	
+	<update id="replyShape" parameterType="String , String">
+		UPDATE board SET bStep = bStep + 1 
+		WHERE bGroup = #{bGroup} AND bStep > #{bStep}
+	</update>
+	
+	<update id="upHit" parameterType="String">
+		UPDATE board SET bHit = bHit + 1 
+		WHERE bId = #{bId}
+	</update>
+
+
+</mapper>

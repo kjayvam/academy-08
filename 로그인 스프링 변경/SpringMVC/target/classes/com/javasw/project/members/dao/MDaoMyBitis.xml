@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 인터페이스 IMDao를 구현하겠다. -->
+<mapper namespace="com.javasw.project.members.dao.IMDao">
+	<!-- 회원가입 -->
+	<insert id="insert"
+		parameterType="com.javasw.project.members.model.MVo">
+		INSERT INTO
+		members (id, pw, name, email, rdate, address)
+		VALUES(#{id},#{pw},#{name},#{eMail},#{rDate},#{address})
+	</insert>
+	<!-- 로그인 -->
+	<select id="login" parameterType="String" resultType="String">
+		SELECT pw
+		FROM members
+		WHERE id = #{id}
+	</select>
+	<!-- 정보 보기 -->
+	<select id="select" parameterType="String"
+		resultType="com.javasw.project.members.model.MVo">
+		SELECT id, pw, name, email, address
+		FROM members
+        WHERE id = #{id}
+	</select>
+	<!-- 정보 수정 -->
+	<update id="modify"
+		parameterType="com.javasw.project.members.model.MVo">
+		UPDATE members
+		SET pw=#{pw}, eMail=#{eMail}, address=#{address}
+		WHERE id=#{id}
+	</update>
+	<!-- 회원 탈퇴 -->
+	<delete id="delete"
+		parameterType="com.javasw.project.members.model.MVo">
+		DELETE FROM members
+		WHERE id = #{id} AND pw=#{pw}
+	</delete>
+	<!-- 회원 리스트 -->
+	<select id="list"
+		resultType="com.javasw.project.members.model.MVo">
+		SELECT *
+		FROM members
+	</select>
+</mapper>
